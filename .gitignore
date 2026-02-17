@@ -1,0 +1,22 @@
+## Build results
+bin/
+obj/
+Debug/
+Release/
+[Oo]bj/
+[Bb]in/
+
+## Visual Studio cache/options
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln.docstates
+*.userprefs
+
+## macOS
+.DS_Store
+
+## Environment files
+.env
+.env.local
