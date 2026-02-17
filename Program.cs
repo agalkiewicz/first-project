@@ -10,6 +10,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddTransient<IMovieService, MovieService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,7 +30,6 @@ else
     app.UseHttpsRedirection();
 }
 
-app.MapGet("/", () => "Hello World!")
-   .Produces(200, typeof(string));
+app.MapMovieEndpoints();
 
 app.Run();
