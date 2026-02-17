@@ -31,3 +31,5 @@
 /Users/alicja.galkiewicz/first-dotnet-web-api/first-project/obj/Debug/net10.0/first-project.pdb
 /Users/alicja.galkiewicz/first-dotnet-web-api/first-project/obj/Debug/net10.0/first-project.genruntimeconfig.cache
 /Users/alicja.galkiewicz/first-dotnet-web-api/first-project/obj/Debug/net10.0/ref/first-project.dll
+/Users/alicja.galkiewicz/first-dotnet-web-api/first-project/bin/Debug/net10.0/Scalar.AspNetCore.dll
+/Users/alicja.galkiewicz/first-dotnet-web-api/first-project/obj/Debug/net10.0/first-project.sourcelink.json
