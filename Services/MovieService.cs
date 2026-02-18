@@ -31,8 +31,8 @@ public class MovieService : IMovieService
     public async Task<PagedResponse<MovieDto>> GetAllMoviesAsync(
     MovieQueryFilter filter, CancellationToken cancellationToken = default)
     {
-        var pageNumber = Math.Max(1, filter.PageNumber);
-        var pageSize = Math.Clamp(filter.PageSize, 1, 50);
+        var pageNumber = Math.Max(1, filter.PageNumber ?? 1);
+        var pageSize = Math.Clamp(filter.PageSize ?? 10, 1, 50);
 
         var query = _dbContext.Movies.AsNoTracking().AsQueryable();
 
