@@ -1,3 +1,5 @@
+using Movies.Api.Common;
+
 public static class MovieEndpoints
 {
     public static void MapMovieEndpoints(this IEndpointRouteBuilder routes)
@@ -10,10 +12,13 @@ public static class MovieEndpoints
             return TypedResults.Created($"/api/movies/{movie.Id}", movie);
         });
 
-        movieApi.MapGet("/", async (IMovieService service) =>
+        movieApi.MapGet("/", async (
+            [AsParameters] MovieQueryFilter filter,
+            IMovieService service,
+            CancellationToken cancellationToken) =>
         {
-            var movies = await service.GetAllMoviesAsync();
-            return TypedResults.Ok(movies);
+            var result = await service.GetAllMoviesAsync(filter, cancellationToken);
+            return TypedResults.Ok(result);
         });
 
         movieApi.MapGet("/{id}", async (IMovieService service, Guid id) =>
