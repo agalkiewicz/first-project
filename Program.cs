@@ -12,6 +12,10 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
 
 builder.Services.AddTransient<IMovieService, MovieService>();
 
+builder.Services.AddOptions<WeatherOptions>().BindConfiguration(nameof(WeatherOptions))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
