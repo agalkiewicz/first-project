@@ -1,1 +1,8 @@
-public record CreateMovieDto(string Title, string Genre, DateTimeOffset ReleaseDate, double Rating);
+using System.ComponentModel.DataAnnotations;
+
+public record CreateMovieDto(
+	[property: Required, StringLength(200)] string Title,
+	[property: Required, StringLength(100)] string Genre,
+	[property: Required] DateTimeOffset ReleaseDate,
+	[property: Range(0, 10)] double Rating
+);

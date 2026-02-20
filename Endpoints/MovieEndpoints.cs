@@ -1,4 +1,5 @@
 using Movies.Api.Common;
+using System.ComponentModel.DataAnnotations;
 
 public static class MovieEndpoints
 {
@@ -10,7 +11,8 @@ public static class MovieEndpoints
         {
             var movie = await service.CreateMovieAsync(command);
             return TypedResults.Created($"/api/movies/{movie.Id}", movie);
-        });
+        })
+        .AddEndpointFilter(new ValidationFilter<CreateMovieDto>());
 
         movieApi.MapGet("/", async (
             [AsParameters] MovieQueryFilter filter,

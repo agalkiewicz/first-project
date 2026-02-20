@@ -21,13 +21,13 @@ public sealed class Movie : EntityBase
 
     public static Movie Create(string title, string genre, DateTimeOffset releaseDate, double rating)
     {
-        ValidateInputs(title, genre, releaseDate, rating);
+        // ValidateInputs(title, genre, releaseDate, rating);
         return new Movie(title, genre, releaseDate, rating);
     }
 
     public void Update(string title, string genre, DateTimeOffset releaseDate, double rating)
     {
-        ValidateInputs(title, genre, releaseDate, rating);
+        // ValidateInputs(title, genre, releaseDate, rating);
 
         Title = title;
         Genre = genre;
