@@ -4,9 +4,18 @@ public class UserRegistrationValidator : AbstractValidator<UserRegistrationReque
 {
     public UserRegistrationValidator()
     {
-        RuleFor(x => x.FirstName).Cascade(CascadeMode.Stop).NotEmpty().MinimumLength(4);
+        RuleFor(x => x.FirstName)
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(4)
+            .Must(IsValidName).WithMessage("{PropertyName} should be all letters.");
         RuleFor(x => x.LastName).NotEmpty().MaximumLength(10);
         RuleFor(x => x.Email).EmailAddress().WithName("MailID").WithMessage("{PropertyName} is invalid! Please check!");
         RuleFor(x => x.Password).Equal(z => z.ConfirmPassword).WithMessage("Passwords do not match!");
+    }
+
+    private bool IsValidName(string name)
+    {
+        return name.All(Char.IsLetter);
     }
 }
