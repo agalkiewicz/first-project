@@ -1,5 +1,4 @@
 using Movies.Api.Common;
-using System.ComponentModel.DataAnnotations;
 
 public static class MovieEndpoints
 {

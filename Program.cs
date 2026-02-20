@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using System.Text.RegularExpressions;
@@ -16,6 +17,8 @@ builder.Services.AddTransient<IMovieService, MovieService>();
 builder.Services.AddOptions<WeatherOptions>().BindConfiguration(nameof(WeatherOptions))
     .ValidateDataAnnotations()
     .ValidateOnStart();
+
+builder.Services.AddValidatorsFromAssemblyContaining<UserRegistrationValidator>();
 
 var app = builder.Build();
 
@@ -83,5 +86,6 @@ else
 }
 
 app.MapMovieEndpoints();
+app.MapAuthEndpoints();
 
 app.Run();
