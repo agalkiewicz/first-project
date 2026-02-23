@@ -19,10 +19,6 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
                .IsRequired()
                .HasMaxLength(200);
 
-        builder.Property(m => m.Genre)
-               .IsRequired()
-               .HasMaxLength(100);
-
         builder.Property(m => m.ReleaseDate)
                .IsRequired();
 
@@ -38,9 +34,27 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
                .IsRequired()
                .ValueGeneratedOnUpdate();
 
+              builder
+                     .HasMany(m => m.Categories)
+                     .WithMany(c => c.Movies)
+                     .UsingEntity<Dictionary<string, object>>(
+                            "MovieCategories",
+                            right => right.HasOne<Category>()
+                                .WithMany()
+                                .HasForeignKey("CategoryId")
+                                .OnDelete(DeleteBehavior.Cascade),
+                            left => left.HasOne<Movie>()
+                                .WithMany()
+                                .HasForeignKey("MovieId")
+                                .OnDelete(DeleteBehavior.Restrict),
+                            join =>
+                            {
+                                   join.ToTable("MovieCategories");
+                                   join.HasKey("MovieId", "CategoryId");
+                            });
+
         // Optional: Add indexes for better query performance
         builder.HasIndex(m => m.Title);
-        builder.HasIndex(m => m.Genre);
         builder.HasIndex(m => m.Rating);
         builder.HasIndex(m => m.Created);
     }

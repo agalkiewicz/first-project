@@ -50,6 +50,6 @@ public static class QueryableExtensions
 
         return query.Where(m =>
             EF.Functions.ILike(m.Title, $"%{search}%") ||
-            EF.Functions.ILike(m.Genre, $"%{search}%"));
+            m.Categories.Any(c => EF.Functions.ILike(c.Name, $"%{search}%")));
     }
 }

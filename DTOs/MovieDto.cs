@@ -1,1 +1,1 @@
-public record MovieDto(int Id, string Title, string Genre, DateTimeOffset ReleaseDate, double Rating);
+public record MovieDto(int Id, string Title, DateTimeOffset ReleaseDate, double Rating, IReadOnlyCollection<CategoryDto> Categories);

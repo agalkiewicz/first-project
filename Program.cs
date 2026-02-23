@@ -13,6 +13,7 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddTransient<IMovieService, MovieService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
 
 builder.Services.AddOptions<WeatherOptions>().BindConfiguration(nameof(WeatherOptions))
     .ValidateDataAnnotations()
@@ -87,5 +88,6 @@ else
 
 app.MapMovieEndpoints();
 app.MapAuthEndpoints();
+app.MapCategoryEndpoints();
 
 app.Run();

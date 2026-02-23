@@ -15,10 +15,9 @@ public static class MovieEndpoints
 
         movieApi.MapGet("/", async (
             [AsParameters] MovieQueryFilter filter,
-            IMovieService service,
-            CancellationToken cancellationToken) =>
+            IMovieService service) =>
         {
-            var result = await service.GetAllMoviesAsync(filter, cancellationToken);
+            var result = await service.GetAllMoviesAsync(filter);
             return TypedResults.Ok(result);
         });
 
