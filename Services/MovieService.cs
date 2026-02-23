@@ -62,7 +62,7 @@ public class MovieService : IMovieService
         };
     }
 
-    public async Task<MovieDto?> GetMovieByIdAsync(Guid id)
+    public async Task<MovieDto?> GetMovieByIdAsync(int id)
     {
         var movie = await _dbContext.Movies
                                .AsNoTracking()
@@ -79,7 +79,7 @@ public class MovieService : IMovieService
         );
     }
 
-    public async Task UpdateMovieAsync(Guid id, UpdateMovieDto command)
+    public async Task UpdateMovieAsync(int id, UpdateMovieDto command)
     {
         var movieToUpdate = await _dbContext.Movies.FindAsync(id);
         if (movieToUpdate is null)
@@ -88,7 +88,7 @@ public class MovieService : IMovieService
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteMovieAsync(Guid id)
+    public async Task DeleteMovieAsync(int id)
     {
         var movieToDelete = await _dbContext.Movies.FindAsync(id);
         if (movieToDelete != null)

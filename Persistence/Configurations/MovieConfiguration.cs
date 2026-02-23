@@ -11,6 +11,9 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         // Set primary key
         builder.HasKey(m => m.Id);
 
+        builder.Property(m => m.Id)
+               .ValueGeneratedOnAdd();
+
         // Configure properties
         builder.Property(m => m.Title)
                .IsRequired()

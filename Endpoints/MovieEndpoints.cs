@@ -22,7 +22,7 @@ public static class MovieEndpoints
             return TypedResults.Ok(result);
         });
 
-        movieApi.MapGet("/{id}", async (IMovieService service, Guid id) =>
+        movieApi.MapGet("/{id}", async (IMovieService service, int id) =>
         {
             var movie = await service.GetMovieByIdAsync(id);
 
@@ -31,13 +31,13 @@ public static class MovieEndpoints
                 : TypedResults.Ok(movie);
         });
 
-        movieApi.MapPut("/{id}", async (IMovieService service, Guid id, UpdateMovieDto command) =>
+        movieApi.MapPut("/{id}", async (IMovieService service, int id, UpdateMovieDto command) =>
         {
             await service.UpdateMovieAsync(id, command);
             return TypedResults.NoContent();
         });
 
-        movieApi.MapDelete("/{id}", async (IMovieService service, Guid id) =>
+        movieApi.MapDelete("/{id}", async (IMovieService service, int id) =>
         {
             await service.DeleteMovieAsync(id);
             return TypedResults.NoContent();
