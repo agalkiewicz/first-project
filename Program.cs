@@ -1,5 +1,8 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text.RegularExpressions;
 
@@ -21,7 +24,57 @@ builder.Services.AddOptions<WeatherOptions>().BindConfiguration(nameof(WeatherOp
 
 builder.Services.AddValidatorsFromAssemblyContaining<UserRegistrationValidator>();
 
+//Configuration from AppSettings
+builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+//User Manager Service
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<MovieDbContext>();
+builder.Services.AddScoped<IUserService, UserService>();
+//Adding Athentication - JWT
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = false;
+        o.SaveToken = false;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"] ?? throw new InvalidOperationException("JWT:Key configuration is missing")))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+    try
+    {
+        //Seed Default Users
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await MovieDbContext.SeedEssentialsAsync(userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
+}
 
 app.Use(async (context, next) =>
 {
@@ -80,11 +133,16 @@ if (app.Environment.IsDevelopment())
     {
         await dbContext.Database.EnsureCreatedAsync();
     }
+    app.UseDeveloperExceptionPage();
 }
 else
 {
     app.UseHttpsRedirection();
 }
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapMovieEndpoints();
 app.MapAuthEndpoints();

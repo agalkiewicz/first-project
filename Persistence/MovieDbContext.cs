@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class MovieDbContext(DbContextOptions<MovieDbContext> options) : DbContext(options)
+public class MovieDbContext(DbContextOptions<MovieDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Movie> Movies => Set<Movie>();
     public DbSet<Category> Categories => Set<Category>();
@@ -69,5 +71,22 @@ public class MovieDbContext(DbContextOptions<MovieDbContext> options) : DbContex
             Movie.Create("Titanic", new DateTimeOffset(1997, 12, 19, 0, 0, 0, TimeSpan.Zero), 7.9, [romance, drama]),
             Movie.Create("Everything Everywhere All at Once", new DateTimeOffset(2022, 3, 25, 0, 0, 0, TimeSpan.Zero), 7.8, [sciFi, action]),
         ];
+    }
+
+    public static async Task SeedEssentialsAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    {
+        //Seed Roles
+        await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.Administrator.ToString()));
+        await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.Moderator.ToString()));
+        await roleManager.CreateAsync(new IdentityRole(Authorization.Roles.User.ToString()));
+
+        //Seed Default User
+        var defaultUser = new ApplicationUser { UserName = Authorization.default_username, Email = Authorization.default_email, EmailConfirmed = true, PhoneNumberConfirmed = true };
+
+        if (userManager.Users.All(u => u.Id != defaultUser.Id))
+        {
+            await userManager.CreateAsync(defaultUser, Authorization.default_password);
+            await userManager.AddToRoleAsync(defaultUser, Authorization.default_role.ToString());
+        }
     }
 }
