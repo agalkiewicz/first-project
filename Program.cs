@@ -17,6 +17,8 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
 
 builder.Services.AddTransient<IMovieService, MovieService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IActorService, ActorService>();
+builder.Services.AddTransient<IDirectorService, DirectorService>();
 
 builder.Services.AddOptions<WeatherOptions>().BindConfiguration(nameof(WeatherOptions))
     .ValidateDataAnnotations()
@@ -150,5 +152,7 @@ app.UseAuthorization();
 app.MapMovieEndpoints();
 app.MapAuthEndpoints();
 app.MapCategoryEndpoints();
+app.MapActorEndpoints();
+app.MapDirectorEndpoints();
 
 app.Run();

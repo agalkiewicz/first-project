@@ -25,7 +25,8 @@ public class MovieService : IMovieService
            movie.Title,
            movie.ReleaseDate,
             movie.Rating,
-            movie.Categories.Select(c => new CategoryDto(c.Id, c.Name)).ToList()
+            movie.Categories.Select(c => new CategoryDto(c.Id, c.Name)).ToList(),
+            null
         );
     }
 
@@ -58,7 +59,10 @@ public class MovieService : IMovieService
                 m.Rating,
                 m.Categories
                     .Select(c => new CategoryDto(c.Id, c.Name))
-                    .ToList()))
+                    .ToList(),
+                m.Director != null 
+                    ? new DirectorSummaryDto(m.Director.Id, m.Director.FirstName, m.Director.LastName) 
+                    : null))
             .ToListAsync();
 
         return new PagedResponse<MovieDto>
@@ -76,6 +80,7 @@ public class MovieService : IMovieService
         var movie = await _dbContext.Movies
                                .AsNoTracking()
                                .Include(m => m.Categories)
+                               .Include(m => m.Director)
                                .FirstOrDefaultAsync(m => m.Id == id);
         if (movie == null)
             return null;
@@ -85,7 +90,10 @@ public class MovieService : IMovieService
             movie.Title,
             movie.ReleaseDate,
             movie.Rating,
-            movie.Categories.Select(c => new CategoryDto(c.Id, c.Name)).ToList()
+            movie.Categories.Select(c => new CategoryDto(c.Id, c.Name)).ToList(),
+            movie.Director != null 
+                ? new DirectorSummaryDto(movie.Director.Id, movie.Director.FirstName, movie.Director.LastName) 
+                : null
         );
     }
 

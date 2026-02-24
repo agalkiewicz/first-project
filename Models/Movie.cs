@@ -3,7 +3,10 @@ public sealed class Movie : EntityBase
     public string Title { get; private set; }
     public DateTimeOffset ReleaseDate { get; private set; }
     public double Rating { get; private set; }
-    public List<Category> Categories { get; private set; } = new List<Category>();
+    public List<Category> Categories { get; private set; } = [];
+    public List<Actor> Actors { get; private set; } = [];
+    public int? DirectorId { get; private set; }
+    public Director? Director { get; private set; }
 
     // Private constructor for ORM frameworks
     private Movie()
@@ -31,6 +34,20 @@ public sealed class Movie : EntityBase
         Rating = rating;
         SetCategories(categories);
 
+        UpdateLastModified();
+    }
+
+    public void SetDirector(Director? director)
+    {
+        Director = director;
+        DirectorId = director?.Id;
+        UpdateLastModified();
+    }
+
+    public void SetActors(List<Actor> actors)
+    {
+        Actors.Clear();
+        Actors.AddRange(actors.DistinctBy(a => a.Id));
         UpdateLastModified();
     }
 
