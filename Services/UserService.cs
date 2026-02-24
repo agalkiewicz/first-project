@@ -102,4 +102,25 @@ public class UserService : IUserService
             signingCredentials: signingCredentials);
         return jwtSecurityToken;
     }
+
+    public async Task<string> AddRoleAsync(AddRoleDto request)
+{
+    var user = await _userManager.FindByEmailAsync(request.Email);
+    if (user == null)
+    {
+        return $"No Accounts Registered with {request.Email}.";
+    }
+    if (await _userManager.CheckPasswordAsync(user, request.Password))
+    {
+        var roleExists = Enum.GetNames(typeof(Authorization.Roles)).Any(x => x.ToLower() == request.Role.ToLower());
+        if (roleExists)
+        {
+            var validRole = Enum.GetValues(typeof(Authorization.Roles)).Cast<Authorization.Roles>().FirstOrDefault(x => x.ToString().ToLower() == request.Role.ToLower());
+            await _userManager.AddToRoleAsync(user, validRole.ToString());
+            return $"Added {request.Role} to user {request.Email}.";
+        }
+        return $"Role {request.Role} not found.";
+    }
+    return $"Incorrect Credentials for user {user.Email}.";
+}
 }

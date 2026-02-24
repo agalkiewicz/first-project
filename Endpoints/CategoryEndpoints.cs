@@ -12,7 +12,7 @@ public static class CategoryEndpoints
             return TypedResults.Created($"/api/categories/{category.Id}", category);
         })
         .AddEndpointFilter(new ValidationFilter<CreateCategoryDto>())
-        .RequireAuthorization();
+        .RequireAuthorization("AdminOnly");
 
         categoryApi.MapGet("/", async (ICategoryService service) =>
         {
@@ -35,7 +35,7 @@ public static class CategoryEndpoints
             return TypedResults.NoContent();
         })
         .AddEndpointFilter(new ValidationFilter<UpdateCategoryDto>())
-        .RequireAuthorization();
+        .RequireAuthorization("AdminOnly");
 
         categoryApi.MapDelete("/{id}", async (ICategoryService service, int id) =>
         {

@@ -27,5 +27,11 @@ public static class AuthEndpoints
             }
             return Results.Ok(result);
         });
+
+        authApi.MapPost("/user/role", async (AddRoleDto request, IUserService userService) =>
+        {
+            var result = await userService.AddRoleAsync(request);
+            return Results.Ok(result);
+        });
     }
 }
