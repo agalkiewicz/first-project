@@ -11,7 +11,8 @@ public static class MovieEndpoints
             var movie = await service.CreateMovieAsync(command);
             return TypedResults.Created($"/api/movies/{movie.Id}", movie);
         })
-        .AddEndpointFilter(new ValidationFilter<CreateMovieDto>());
+        .AddEndpointFilter(new ValidationFilter<CreateMovieDto>())
+        .RequireAuthorization();
 
         movieApi.MapGet("/", async (
             [AsParameters] MovieQueryFilter filter,
@@ -34,7 +35,8 @@ public static class MovieEndpoints
         {
             await service.UpdateMovieAsync(id, command);
             return TypedResults.NoContent();
-        });
+        })
+        .RequireAuthorization();
 
         movieApi.MapDelete("/{id}", async (IMovieService service, int id) =>
         {

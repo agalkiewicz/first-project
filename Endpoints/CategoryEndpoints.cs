@@ -11,7 +11,8 @@ public static class CategoryEndpoints
             var category = await service.CreateCategoryAsync(command);
             return TypedResults.Created($"/api/categories/{category.Id}", category);
         })
-        .AddEndpointFilter(new ValidationFilter<CreateCategoryDto>());
+        .AddEndpointFilter(new ValidationFilter<CreateCategoryDto>())
+        .RequireAuthorization();
 
         categoryApi.MapGet("/", async (ICategoryService service) =>
         {
@@ -33,7 +34,8 @@ public static class CategoryEndpoints
             await service.UpdateCategoryAsync(id, command);
             return TypedResults.NoContent();
         })
-        .AddEndpointFilter(new ValidationFilter<UpdateCategoryDto>());
+        .AddEndpointFilter(new ValidationFilter<UpdateCategoryDto>())
+        .RequireAuthorization();
 
         categoryApi.MapDelete("/{id}", async (ICategoryService service, int id) =>
         {
