@@ -17,8 +17,21 @@ public class MovieService : IMovieService
         var categories = await GetCategoriesByIdsAsync(command.CategoryIds ?? Array.Empty<int>());
         var movie = Movie.Create(command.Title, command.ReleaseDate, command.Rating, categories);
 
+        if (command.DirectorId.HasValue)
+        {
+            var director = await _dbContext.Directors.FindAsync(command.DirectorId.Value);
+            if (director is not null)
+            {
+                movie.SetDirector(director);
+            }
+        }
+
         await _dbContext.Movies.AddAsync(movie);
         await _dbContext.SaveChangesAsync();
+
+        DirectorSummaryDto? directorDto = movie.Director is not null
+            ? new DirectorSummaryDto(movie.Director.Id, movie.Director.FirstName, movie.Director.LastName)
+            : null;
 
         return new MovieDto(
            movie.Id,
@@ -26,7 +39,7 @@ public class MovieService : IMovieService
            movie.ReleaseDate,
             movie.Rating,
             movie.Categories.Select(c => new CategoryDto(c.Id, c.Name)).ToList(),
-            null
+            directorDto
         );
     }
 
