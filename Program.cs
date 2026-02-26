@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Movies.Api.Common;
 using Scalar.AspNetCore;
 using System.Text.RegularExpressions;
 
@@ -61,6 +62,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Administrator"));
 });
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -80,6 +84,8 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred seeding the DB.");
     }
 }
+
+app.UseExceptionHandler();
 
 app.Use(async (context, next) =>
 {
@@ -138,7 +144,6 @@ if (app.Environment.IsDevelopment())
     {
         await dbContext.Database.EnsureCreatedAsync();
     }
-    app.UseDeveloperExceptionPage();
 }
 else
 {
